@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: saguda-dldm
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn dldm.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: dldm.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: DATABASE_URL
+        fromDatabase:
+          name: saguda-dldm-db
+          property: connectionString
+
+databases:
+  - name: saguda-dldm-db
+    databaseName: saguda_dldm
+    user: saguda_dldm_user
+    plan: free 
