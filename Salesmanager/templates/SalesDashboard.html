@@ -1,0 +1,674 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Manager Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(30, 136, 229, 0.2); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    .sidebar-item:hover { background: rgba(30, 136, 229, 0.1); }
+    .active-sidebar { background: rgba(30, 136, 229, 0.15); border-left: 4px solid #1E88E5; }
+    .pharmacy-primary { background: #1E88E5; }
+    .pharmacy-primary-dark { background: #1565C0; }
+    .pharmacy-green { background: #4CAF50; }
+    .pharmacy-teal { background: #00ACC1; }
+    /* Responsive Navigation */
+    .sidebar {
+      transition: all 0.3s ease-in-out;
+      z-index: 1000;
+    }
+    .sidebar.collapsed {
+      width: 64px;
+    }
+    .sidebar.collapsed .sidebar-title,
+    .sidebar.collapsed .section-title,
+    .sidebar.collapsed .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .sidebar.collapsed .sidebar-item {
+      justify-content: center;
+      padding: 0.75rem;
+    }
+    .sidebar.collapsed .user-info {
+      display: none;
+    }
+    .sidebar nav {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+    .sidebar nav::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sidebar nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .sidebar nav::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        height: 100vh;
+        transform: translateX(-100%);
+        width: 256px;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar.collapsed {
+        width: 256px;
+      }
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+      .sidebar-overlay.open {
+        display: block;
+      }
+      .main-content {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-cyan-50 text-gray-800 min-h-screen flex">
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar w-64 pharmacy-primary-dark flex flex-col shadow-xl fixed lg:relative h-screen" id="sidebar">
+    <div class="flex items-center justify-between h-16 pharmacy-primary border-b border-blue-400 px-4 flex-shrink-0">
+      <div class="flex items-center flex-1">
+        <button onclick="toggleSidebar()" class="mr-3 text-white hover:text-blue-200 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+        <div class="flex items-center">
+          <svg class="w-6 h-6 text-white mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+          <h1 class="sidebar-title text-lg font-bold text-white transition-opacity">Sales Manager</h1>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 mt-4 px-4 space-y-4 overflow-y-auto">
+      <!-- Dashboard Section -->
+      <div>
+        <h3 class="section-title text-xs font-semibold text-blue-300 uppercase tracking-wider px-4 py-2 transition-opacity">Dashboard</h3>
+        <div class="space-y-1">
+          <a href="{% url 'sales_dashboard' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg active-sidebar text-white">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span class="nav-text ml-3 transition-opacity">Overview</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Footer -->
+    <div class="p-4 border-t border-blue-400 mt-auto">
+      <div class="user-info mb-3 px-4">
+        <p class="text-xs text-blue-300 text-center">{{ user.username }}</p>
+        <p class="text-xs text-blue-200 text-center">{{ user.get_role_display }}</p>
+      </div>
+      <a href="{% url 'logout' %}" class="w-full px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition flex items-center justify-center">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        <span class="nav-text ml-2 transition-opacity">Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content flex-1 p-4 lg:p-8 w-full">
+    <!-- Mobile Menu Button -->
+    <button onclick="toggleSidebar()" class="lg:hidden mb-4 p-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 bg-white rounded-xl p-4 lg:p-6 shadow-md gap-4">
+      <div>
+        <h2 class="text-2xl lg:text-3xl font-bold text-gray-800">Welcome back, {{ user.username }} 👋</h2>
+        <p class="text-gray-600 mt-1 text-sm lg:text-base">Here's your sales dashboard overview</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="px-3 lg:px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs lg:text-sm font-semibold">{{ user.get_role_display }}</span>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="glass-card rounded-xl p-6 border-l-4 border-blue-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 font-medium">Today's Sales</p>
+            <h3 class="text-3xl font-bold mt-2 text-gray-800">{{ today_sales|floatformat:0 }} TZS</h3>
+            <p class="text-xs text-gray-500 mt-1">Last updated: {{ last_updated }}</p>
+          </div>
+          <div class="text-4xl text-blue-500">💰</div>
+        </div>
+      </div>
+      <div class="glass-card rounded-xl p-6 border-l-4 border-green-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 font-medium">Total Drugs</p>
+            <h3 class="text-3xl font-bold mt-2 text-gray-800">{{ total_drugs }}</h3>
+            <p class="text-xs text-gray-500 mt-1">Available in stock</p>
+          </div>
+          <div class="text-4xl text-green-500">💊</div>
+        </div>
+      </div>
+      <div class="glass-card rounded-xl p-6 border-l-4 border-yellow-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 font-medium">Pending Orders</p>
+            <h3 class="text-3xl font-bold mt-2 text-gray-800">{{ pending_orders }}</h3>
+            <p class="text-xs text-gray-500 mt-1">Awaiting processing</p>
+          </div>
+          <div class="text-4xl text-yellow-500">⏳</div>
+        </div>
+      </div>
+      <div class="glass-card rounded-xl p-6 border-l-4 border-cyan-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 font-medium">Monthly Revenue</p>
+            <h3 class="text-3xl font-bold mt-2 text-gray-800">{{ monthly_revenue|floatformat:0 }} TZS</h3>
+            <p class="text-xs text-gray-500 mt-1">Current month</p>
+          </div>
+          <div class="text-4xl text-cyan-500">📈</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Sales Table -->
+    <div class="glass-card rounded-xl p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-bold text-gray-800">Recent Sales</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b-2 border-blue-200 bg-blue-50">
+              <th class="text-left py-3 px-4 font-semibold text-gray-700">Order ID</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-700">Customer</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-700">Drug</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-700">Quantity</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-700">Amount</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-700">Date</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if recent_sales %}
+              {% for sale in recent_sales %}
+              <tr class="border-b border-gray-200 hover:bg-blue-50 transition">
+                <td class="py-3 px-4 font-mono text-gray-800 font-medium">{{ sale.order_id }}</td>
+                <td class="py-3 px-4 text-gray-700">{{ sale.customer_name }}</td>
+                <td class="py-3 px-4 text-gray-700">{{ sale.drug.name }}</td>
+                <td class="py-3 px-4 text-gray-700">{{ sale.quantity }}</td>
+                <td class="py-3 px-4 text-gray-800 font-semibold">{{ sale.amount|floatformat:0 }} TZS</td>
+                <td class="py-3 px-4 text-gray-600 text-sm">{{ sale.date|date:"M d, Y H:i" }}</td>
+                <td class="py-3 px-4">
+                  {% if sale.status == 'completed' %}
+                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold border border-green-300">Completed</span>
+                  {% elif sale.status == 'pending' %}
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold border border-yellow-300">Pending</span>
+                  {% else %}
+                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold border border-red-300">Cancelled</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="py-8 text-center text-gray-500">No sales found.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass-card rounded-xl p-6">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h3>
+      <div class="flex flex-wrap gap-4">
+        <button onclick="showNewSaleModal()" class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition shadow-md font-semibold">
+          ➕ New Sale
+        </button>
+        <button onclick="showInventoryModal()" class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition shadow-md font-semibold">
+          📦 Check Inventory
+        </button>
+        <button onclick="showAddStockModal()" class="px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition shadow-md font-semibold">
+          ➕ Add Stock
+        </button>
+        <button onclick="showReportsModal()" class="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition shadow-md font-semibold">
+          📊 Generate Report
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Responsive Sidebar Toggle
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      
+      // On mobile, use slide in/out behavior
+      if (window.innerWidth < 768) {
+        sidebar.classList.toggle('open');
+        if (overlay) {
+          overlay.classList.toggle('open');
+        }
+      } else {
+        // On desktop, collapse/expand sidebar
+        sidebar.classList.toggle('collapsed');
+        // Save state to localStorage
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+      }
+    }
+
+    // Restore sidebar state on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const sidebar = document.getElementById('sidebar');
+      const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+      if (isCollapsed && window.innerWidth >= 768) {
+        sidebar.classList.add('collapsed');
+      }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      const sidebar = document.getElementById('sidebar');
+      if (window.innerWidth >= 768) {
+        sidebar.classList.remove('open');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (overlay) overlay.classList.remove('open');
+      } else {
+        sidebar.classList.remove('collapsed');
+      }
+    });
+
+    // Close sidebar when clicking on a link on mobile
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          const sidebar = document.getElementById('sidebar');
+          const overlay = document.getElementById('sidebarOverlay');
+          sidebar.classList.remove('open');
+          if (overlay) overlay.classList.remove('open');
+        }
+      });
+    });
+
+    function showNewSaleModal() {
+      let saleItems = [];
+      
+      function addItemRow() {
+        const itemsContainer = document.getElementById('saleItemsContainer');
+        const itemIndex = saleItems.length;
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'sale-item-row';
+        itemDiv.style.cssText = 'margin-bottom: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 0.375rem; background: #f9fafb;';
+        itemDiv.innerHTML = `
+          <div style="display: flex; gap: 0.5rem; align-items: end;">
+            <div style="flex: 2;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Drug</label>
+              <select class="drug-select" data-index="${itemIndex}" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem;">
+                <option value="">Select Drug</option>
+                {% for drug in available_drugs %}
+                <option value="{{ drug.id }}" data-price="{{ drug.price }}">{{ drug.name }} - {{ drug.price|floatformat:0 }} TZS</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Quantity</label>
+              <input type="number" class="quantity-input" data-index="${itemIndex}" min="1" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem;" />
+            </div>
+            <div style="flex: 1;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Total</label>
+              <input type="text" class="item-total" data-index="${itemIndex}" readonly style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem; background: #e5e7eb;" value="0 TZS" />
+            </div>
+            <div>
+              <button type="button" class="remove-item-btn" data-index="${itemIndex}" style="padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 0.375rem; cursor: pointer;">Remove</button>
+            </div>
+          </div>
+        `;
+        
+        itemsContainer.appendChild(itemDiv);
+        saleItems.push({ drug_id: '', quantity: 0, price: 0 });
+        
+        // Attach event listeners
+        const drugSelect = itemDiv.querySelector('.drug-select');
+        const quantityInput = itemDiv.querySelector('.quantity-input');
+        const itemTotal = itemDiv.querySelector('.item-total');
+        const removeBtn = itemDiv.querySelector('.remove-item-btn');
+        
+        function updateItemTotal() {
+          const selectedOption = drugSelect.options[drugSelect.selectedIndex];
+          const price = parseFloat(selectedOption.dataset.price) || 0;
+          const qty = parseFloat(quantityInput.value) || 0;
+          const total = price * qty;
+          
+          saleItems[itemIndex] = {
+            drug_id: drugSelect.value,
+            quantity: qty,
+            price: price
+          };
+          
+          itemTotal.value = total > 0 ? total.toLocaleString() + ' TZS' : '0 TZS';
+          updateGrandTotal();
+        }
+        
+        drugSelect.addEventListener('change', updateItemTotal);
+        quantityInput.addEventListener('input', updateItemTotal);
+        
+        removeBtn.addEventListener('click', () => {
+          itemDiv.remove();
+          saleItems.splice(itemIndex, 1);
+          updateGrandTotal();
+        });
+      }
+      
+      function updateGrandTotal() {
+        const grandTotal = saleItems.reduce((sum, item) => {
+          return sum + (item.price * item.quantity);
+        }, 0);
+        
+        const grandTotalDiv = document.getElementById('grandTotal');
+        const grandTotalValue = document.getElementById('grandTotalValue');
+        if (grandTotalDiv && grandTotalValue) {
+          grandTotalValue.textContent = grandTotal.toLocaleString();
+          grandTotalDiv.style.display = grandTotal > 0 ? 'block' : 'none';
+        }
+      }
+      
+      Swal.fire({
+        title: 'New Sale',
+        html: `
+          <form id="newSaleForm" style="text-align: left;">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Customer Name</label>
+              <input type="text" id="customerName" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem;" />
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label style="font-weight: 600;">Drugs</label>
+                <button type="button" id="addItemBtn" style="padding: 0.5rem 1rem; background: #10b981; color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.875rem;">+ Add Drug</button>
+              </div>
+              <div id="saleItemsContainer"></div>
+            </div>
+            <div id="grandTotal" style="margin-top: 1rem; padding: 0.75rem; background: #dbeafe; border-radius: 0.375rem; display: none; border: 2px solid #3b82f6;">
+              <strong style="font-size: 1.125rem;">Grand Total: <span id="grandTotalValue">0</span> TZS</strong>
+            </div>
+          </form>
+        `,
+        width: '800px',
+        showCancelButton: true,
+        confirmButtonText: 'Process Sale & Generate Receipt',
+        cancelButtonText: 'Cancel',
+        didOpen: () => {
+          // Add first item row
+          addItemRow();
+          
+          // Add item button
+          document.getElementById('addItemBtn').addEventListener('click', addItemRow);
+        },
+        preConfirm: () => {
+          const customerName = document.getElementById('customerName').value;
+          
+          if (!customerName) {
+            Swal.showValidationMessage('Please enter customer name');
+            return false;
+          }
+          
+          const validItems = saleItems.filter(item => item.drug_id && item.quantity > 0);
+          
+          if (validItems.length === 0) {
+            Swal.showValidationMessage('Please add at least one drug with quantity');
+            return false;
+          }
+          
+          // Process the sale via AJAX
+          const formData = new FormData();
+          formData.append('customer_name', customerName);
+          formData.append('items', JSON.stringify(validItems));
+          formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+          
+          return fetch('{% url "process_sale" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: data.message,
+                showCancelButton: true,
+                confirmButtonText: 'View Receipt',
+                cancelButtonText: 'Close'
+              }).then((result) => {
+                if (result.isConfirmed && data.order_id) {
+                  window.location.href = '{% url "receipt" "ORDER_ID" %}'.replace('ORDER_ID', data.order_id);
+                } else {
+                  window.location.reload();
+                }
+              });
+            } else {
+              Swal.showValidationMessage(data.message);
+            }
+          })
+          .catch(error => {
+            Swal.showValidationMessage('An error occurred. Please try again.');
+          });
+        }
+      });
+    }
+
+    function showInventoryModal() {
+      Swal.fire({
+        title: 'Inventory Status',
+        html: `
+          <div style="max-height: 400px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
+                  <th style="padding: 0.75rem; text-align: left; font-weight: 600;">Drug</th>
+                  <th style="padding: 0.75rem; text-align: left; font-weight: 600;">Quantity</th>
+                  <th style="padding: 0.75rem; text-align: left; font-weight: 600;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in inventory %}
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                  <td style="padding: 0.75rem;">{{ item.drug.name }}</td>
+                  <td style="padding: 0.75rem;">{{ item.quantity }}</td>
+                  <td style="padding: 0.75rem;">
+                    {% if item.status == 'in_stock' %}
+                      <span style="padding: 0.25rem 0.75rem; background: #d1fae5; color: #065f46; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">In Stock</span>
+                    {% elif item.status == 'low_stock' %}
+                      <span style="padding: 0.25rem 0.75rem; background: #fef3c7; color: #92400e; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">Low Stock</span>
+                    {% else %}
+                      <span style="padding: 0.25rem 0.75rem; background: #fee2e2; color: #991b1b; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">Out of Stock</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        `,
+        width: '700px',
+        showConfirmButton: true,
+        confirmButtonText: 'Close'
+      });
+    }
+
+    function showAddStockModal() {
+      Swal.fire({
+        title: 'Add Stock',
+        html: `
+          <form id="addStockForm" style="text-align: left;">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Select Drug</label>
+              <select id="stockDrugSelect" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem;">
+                <option value="">Select Drug</option>
+                {% for drug in all_drugs %}
+                <option value="{{ drug.id }}" data-current-stock="{% if drug.inventory %}{{ drug.inventory.quantity }}{% else %}0{% endif %}">
+                  {{ drug.name }} - Current Stock: {% if drug.inventory %}{{ drug.inventory.quantity }}{% else %}0{% endif %}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Quantity to Add</label>
+              <input type="number" id="stockQuantity" min="1" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem;" />
+            </div>
+            <div id="stockInfo" style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border-radius: 0.375rem; display: none;">
+              <strong>Current Stock: <span id="currentStockValue">0</span> units</strong><br>
+              <strong>New Stock After Addition: <span id="newStockValue">0</span> units</strong>
+            </div>
+          </form>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Add Stock',
+        cancelButtonText: 'Cancel',
+        didOpen: () => {
+          const drugSelect = document.getElementById('stockDrugSelect');
+          const quantity = document.getElementById('stockQuantity');
+          const stockInfo = document.getElementById('stockInfo');
+          const currentStockValue = document.getElementById('currentStockValue');
+          const newStockValue = document.getElementById('newStockValue');
+          
+          function updateStockInfo() {
+            const selectedOption = drugSelect.options[drugSelect.selectedIndex];
+            const currentStock = parseInt(selectedOption.dataset.currentStock) || 0;
+            const qtyToAdd = parseInt(quantity.value) || 0;
+            const newStock = currentStock + qtyToAdd;
+            
+            if (drugSelect.value && qtyToAdd > 0) {
+              currentStockValue.textContent = currentStock;
+              newStockValue.textContent = newStock;
+              stockInfo.style.display = 'block';
+            } else {
+              stockInfo.style.display = 'none';
+            }
+          }
+          
+          drugSelect.addEventListener('change', updateStockInfo);
+          quantity.addEventListener('input', updateStockInfo);
+        },
+        preConfirm: () => {
+          const drugId = document.getElementById('stockDrugSelect').value;
+          const quantity = document.getElementById('stockQuantity').value;
+          
+          if (!drugId || !quantity || parseInt(quantity) <= 0) {
+            Swal.showValidationMessage('Please select a drug and enter a valid quantity');
+            return false;
+          }
+          
+          // Process the stock addition via AJAX
+          const formData = new FormData();
+          formData.append('drug_id', drugId);
+          formData.append('quantity', quantity);
+          formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+          
+          return fetch('{% url "add_stock" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              Swal.fire('Success!', data.message, 'success').then(() => {
+                window.location.reload();
+              });
+            } else {
+              Swal.showValidationMessage(data.message);
+            }
+          })
+          .catch(error => {
+            Swal.showValidationMessage('An error occurred. Please try again.');
+          });
+        }
+      });
+    }
+
+    function showReportsModal() {
+      Swal.fire({
+        title: 'Generate Report',
+        html: `
+          <form id="reportForm">
+            <div class="mb-3">
+              <label class="form-label">Report Type</label>
+              <select class="form-control" id="reportType">
+                <option value="daily">Daily Sales</option>
+                <option value="weekly">Weekly Sales</option>
+                <option value="monthly">Monthly Sales</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date Range</label>
+              <input type="date" class="form-control" id="startDate" />
+              <input type="date" class="form-control mt-2" id="endDate" />
+            </div>
+          </form>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Generate',
+        cancelButtonText: 'Cancel',
+      });
+    }
+
+    function showSuccess(message) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: message,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+
+    function showError(message) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: message,
+      });
+    }
+  </script>
+</body>
+</html>
