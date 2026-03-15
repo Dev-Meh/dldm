@@ -1,11 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-<<<<<<< HEAD
-
-# Create your models here.
-class CustomUser(AbstractUser):
-    pass
-=======
 from django.core.validators import RegexValidator
 
 # Create your models here.
@@ -32,4 +26,3 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True
     )
->>>>>>> b87c717 (all project)
