@@ -30,6 +30,9 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
+# CSRF trusted origins for Render
+CSRF_TRUSTED_ORIGINS = os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', 'https://dldm.onrender.com,http://dldm.onrender.com').split(',')
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
