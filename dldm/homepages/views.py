@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-from django.shortcuts import render
-from django.http import HttpResponse
-=======
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
->>>>>>> b87c717 (all project)
 
 # Create your views here.
 def index(request):
@@ -20,9 +15,6 @@ def contact(request):
     return render(request, 'contact.html')
 
 def shop(request):
-<<<<<<< HEAD
-    return render(request, 'shop.html')
-=======
     return render(request, 'shop.html')
 
 def login_view(request):
@@ -61,4 +53,3 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'You have been successfully logged out.')
     return redirect('login')
->>>>>>> b87c717 (all project)
