@@ -2,6 +2,5 @@
 set -o errexit
 
 pip install -r requirements.txt
-python "dldm/manage.py" collectstatic --noinput
-python "dldm/manage.py" migrate
-
+python dldm/manage.py collectstatic --noinput
+python dldm/manage.py migrate

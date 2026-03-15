@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Drug</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen py-8">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white shadow rounded-lg p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Edit Drug: {{ drug.name }}</h1>
+        <a href="{% url 'stock_list' %}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</a>
+      </div>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="mb-4 p-4 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Drug Name *</label>
+          {{ drug_form.name }}
+          {% if drug_form.name.errors %}
+            <p class="text-red-600 text-sm mt-1">{{ drug_form.name.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+          {{ drug_form.description }}
+          {% if drug_form.description.errors %}
+            <p class="text-red-600 text-sm mt-1">{{ drug_form.description.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Price (TZS) *</label>
+            {{ drug_form.price }}
+            {% if drug_form.price.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ drug_form.price.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity *</label>
+            {{ inventory_form.quantity }}
+            {% if inventory_form.quantity.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ inventory_form.quantity.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Reorder Level *</label>
+            {{ inventory_form.reorder_level }}
+            {% if inventory_form.reorder_level.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ inventory_form.reorder_level.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if drug_form.non_field_errors or inventory_form.non_field_errors %}
+          <div class="p-4 bg-red-100 text-red-700 rounded">
+            {{ drug_form.non_field_errors }}
+            {{ inventory_form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="flex justify-end gap-4 pt-4 border-t">
+          <a href="{% url 'stock_list' %}" class="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</a>
+          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update Drug</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Style form fields with Tailwind classes
+    document.querySelectorAll('input, select, textarea').forEach(field => {
+      if (!field.type || field.type !== 'checkbox') {
+        field.className = 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500';
+      } else {
+        field.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded';
+      }
+    });
+  </script>
+</body>
+</html>
+

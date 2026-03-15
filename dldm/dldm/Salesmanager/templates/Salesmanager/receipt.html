@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt - {{ order_id }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="max-w-2xl mx-auto bg-white shadow-lg p-8 my-8">
+        <!-- Header -->
+        <div class="text-center mb-8 border-b pb-4">
+            <h1 class="text-3xl font-bold text-gray-800">PHARMACY RECEIPT</h1>
+            <p class="text-gray-600 mt-2">Order ID: {{ order_id }}</p>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="mb-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-600">Customer Name:</p>
+                    <p class="font-semibold text-lg">{{ customer_name }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600">Date:</p>
+                    <p class="font-semibold">{{ sale_date|date:"F d, Y H:i" }}</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-sm text-gray-600">Sales Manager:</p>
+                <p class="font-semibold">{{ sales_manager.username }}</p>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="mb-6">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border border-gray-300 px-4 py-2 text-left">#</th>
+                        <th class="border border-gray-300 px-4 py-2 text-left">Drug Name</th>
+                        <th class="border border-gray-300 px-4 py-2 text-right">Quantity</th>
+                        <th class="border border-gray-300 px-4 py-2 text-right">Unit Price</th>
+                        <th class="border border-gray-300 px-4 py-2 text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">{{ forloop.counter }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ sale.drug.name }}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-right">{{ sale.quantity }}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-right">{{ sale.drug.price|floatformat:0 }} TZS</td>
+                        <td class="border border-gray-300 px-4 py-2 text-right font-semibold">{{ sale.amount|floatformat:0 }} TZS</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-100 font-bold">
+                        <td colspan="2" class="border border-gray-300 px-4 py-2 text-right">TOTAL:</td>
+                        <td class="border border-gray-300 px-4 py-2 text-right">{{ total_quantity }}</td>
+                        <td class="border border-gray-300 px-4 py-2"></td>
+                        <td class="border border-gray-300 px-4 py-2 text-right text-lg">{{ total_amount|floatformat:0 }} TZS</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 pt-4 border-t">
+            <p class="text-gray-600 text-sm">Thank you for your purchase!</p>
+            <p class="text-gray-500 text-xs mt-2">This is a computer-generated receipt</p>
+        </div>
+
+        <!-- Print Button -->
+        <div class="mt-6 text-center no-print">
+            <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 mr-4">
+                🖨️ Print Receipt
+            </button>
+            <a href="{% url 'sales_dashboard' %}" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 inline-block">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+
