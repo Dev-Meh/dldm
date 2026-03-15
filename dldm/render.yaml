@@ -2,7 +2,7 @@ services:
   - type: web
     name: saguda-dldm
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: ./build.sh
     startCommand: gunicorn dldm.wsgi:application
     envVars:
       - key: PYTHON_VERSION
@@ -22,4 +22,4 @@ databases:
   - name: saguda-dldm-db
     databaseName: saguda_dldm
     user: saguda_dldm_user
-    plan: free 
+    plan: free
