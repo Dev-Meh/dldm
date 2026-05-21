@@ -1,2 +1,1 @@
-web: gunicorn dldm.wsgi
-
+web: gunicorn dldm.wsgi --chdir dldm

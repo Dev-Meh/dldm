@@ -20,11 +20,4 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('homepages.urls')),
-    path('salesmanager/', include('Salesmanager.urls')),
-    path('systemadmin/', include('SystemAdmin.urls')),
-    path('stockmanager/', include('StockManager.urls')),
-    # Direct dashboard URLs for redirects
-    path('sales-dashboard/', include('Salesmanager.urls')),
-    path('stock-dashboard/', include('StockManager.urls')),
-    path('admin-dashboard/', include('SystemAdmin.urls')),
 ]

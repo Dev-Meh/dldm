@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: dldm
+    name: saguda-dldm
     env: python
-    buildCommand: ./build.sh
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn dldm.wsgi:application
     envVars:
       - key: PYTHON_VERSION
@@ -13,17 +13,13 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
-      - key: DJANGO_ALLOWED_HOSTS
-        value: dldm.onrender.com,localhost,127.0.0.1
-      - key: DJANGO_CSRF_TRUSTED_ORIGINS
-        value: https://dldm.onrender.com,http://dldm.onrender.com
       - key: DATABASE_URL
         fromDatabase:
-          name: dldm-db
+          name: saguda-dldm-db
           property: connectionString
 
 databases:
-  - name: dldm-db
-    databaseName: dldm
-    user: dldm_user
-    plan: free
+  - name: saguda-dldm-db
+    databaseName: saguda_dldm
+    user: saguda_dldm_user
+    plan: free 

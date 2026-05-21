@@ -6,6 +6,19 @@ from django.urls import reverse
 
 # Create your views here.
 def index(request):
+    # If user is already authenticated, redirect to appropriate dashboard
+    if request.user.is_authenticated:
+        if request.user.role == 'SYSTEM_ADMIN':
+            return redirect('admin_dashboard')
+        elif request.user.role == 'STOCK_MANAGER':
+            return redirect('stock_dashboard')
+        elif request.user.role == 'SALES_MANAGER':
+            return redirect('sales_dashboard')
+        elif request.user.role == 'COMPANY_MANAGER':
+            return redirect('company_dashboard')
+        else:
+            return redirect('index')
+    
     return render(request, 'index.html')
 
 def about(request):
